@@ -3367,7 +3367,7 @@ spawn(function()
     end
 end)
   
-    Setting:Toggle("Fast Attack",true,function(value)
+    Setting:Toggle("Fast Attack Bata",true,function(value)
         _G.FastAttack = value
     end)      
     
@@ -3410,7 +3410,7 @@ end)
     local STOP = require(Client.PlayerScripts.CombatFramework.Particle)
     local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
     spawn(function()
-        while task.wait() do
+        while task.wait(0.4) do
             pcall(function()
                 if not shared.orl then shared.orl = STOPRL.wrapAttackAnimationAsync end
                 if not shared.cpc then shared.cpc = STOP.play end
@@ -3419,10 +3419,10 @@ end)
                     if Hits then
                         if _G.FastAttack then
                             STOP.play = function() end
-                            a:Play(0.4,0.9,0.6)
+                            a:Play(0.4,0.9,0.6,2,0.4,0.9,0.6,2,0.2)
                             func(Hits)
                             STOP.play = shared.cpc
-                            wait(a.length * 0.8)
+                            wait(a.length * 0.9)
                             a:Stop()
                         else
                             a:Play()
@@ -3432,7 +3432,7 @@ end)
             end)
         end
     end)
-
+    
 Setting:Toggle("Auto Click",false,function(value)
 _G.AutoClick = value
 end)
