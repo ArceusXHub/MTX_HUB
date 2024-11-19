@@ -3344,7 +3344,7 @@ spawn(function()
                 elseif _G.BringMode == "Normal" then
                     _G.BringMode = 250
                 elseif _G.BringMode == "Super Bring" then
-                    _G.BringMode = 300
+                    _G.BringMode = 500
                 end
             end)
         end
@@ -3367,7 +3367,7 @@ spawn(function()
     end
 end)
   
-    Setting:Toggle("Fast Attack Bata1",true,function(value)
+    Setting:Toggle("Fast Attack Bata2",true,function(value)
         _G.FastAttack = value
     end)      
     
@@ -3395,6 +3395,7 @@ spawn(function()
         end
     end)
 end)
+
 spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
         if _G.FastAttack or _G.FastAttackCambodiakak == true then
@@ -3403,35 +3404,6 @@ spawn(function()
         end
     end)
 end)
-
-    local CamShake = require(game.ReplicatedStorage.Util.CameraShaker)
-    CamShake:Stop()
-    local Client = game.Players.LocalPlayer
-    local STOP = require(Client.PlayerScripts.CombatFramework.Particle)
-    local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
-    spawn(function()
-        while task.wait() do
-            pcall(function()
-                if not shared.orl then shared.orl = STOPRL.wrapAttackAnimationAsync end
-                if not shared.cpc then shared.cpc = STOP.play end
-                    STOPRL.wrapAttackAnimationAsync = function(a,b,c,d,func)
-                    local Hits = STOPRL.getBladeHits(b,c,d)
-                    if Hits then
-                        if _G.FastAttack then
-                            STOP.play = function() end
-                            a:Play(0.4,0.6,2,0.6)
-                            func(Hits)
-                            STOP.play = shared.cpc
-                            wait(a.length * 0.9)
-                            a:Stop()
-                        else
-                            a:Play()
-                        end
-                    end
-                end
-            end)
-        end
-    end)
 
 Setting:Toggle("Auto Click",false,function(value)
 _G.AutoClick = value
