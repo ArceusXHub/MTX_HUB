@@ -3480,7 +3480,7 @@ spawn(function()
     while wait(.1) do
         if _G.FastAttack then
             pcall(function()
-                repeat task.wait(0.175)
+                repeat task.wait(0.5,1,0.4,0.9,0.8)
                     AttackHit()
                 until not _G.FastAttack
             end)
