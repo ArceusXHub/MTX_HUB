@@ -3399,7 +3399,171 @@ spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
         if _G.FastAttack or _G.FastAttackCambodiakak == true then
             game.Players.LocalPlayer.Character.Stun.Value = 0
-            game.Players.LocalPlayer.Character.Busy.Value = false        
+local CombatFramework = require(game:GetService("Players").LocalPlayer.PlayerScripts:WaitForChild("CombatFramework"))
+local CombatFrameworkR = getupvalues(CombatFramework)[2]
+local RigController = require(game:GetService("Players")["LocalPlayer"].PlayerScripts.CombatFramework.RigController)
+local RigControllerR = getupvalues(RigController)[2]
+local realbhit = require(game.ReplicatedStorage.CombatFramework.RigLib)
+local cooldownfastattack = tick()
+
+function CameraShaker() 
+local Camera = require(game.ReplicatedStorage.Util.CameraShaker)
+Camera:Stop()
+end
+-- [FastAttack]
+function CurrentWeapon()
+local ac = CombatFrameworkR.activeController
+local ret = ac.blades[1]
+if not ret then return game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Name end
+pcall(function()
+while ret.Parent ~= game.Players.LocalPlayer.Character do ret = ret.Parent end
+end)
+if not ret then return game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Name end
+return ret
+end
+
+function getAllBladeHits(Sizes)
+	local Hits = {}
+	local Client = game.Players.LocalPlayer
+	local Characters = workspace.Characters:GetChildren()
+	local Enemies = game:GetService("Workspace").Enemies:GetChildren()
+	for i = 1, #Enemies do
+	local v = Enemies[i]
+	local Human = v:FindFirstChildOfClass("Humanoid")
+	if Human and Human.RootPart and Human.Health > 0 and Client:DistanceFromCharacter(Human.RootPart.Position) <= Sizes + 5 then
+		table.insert(Hits, Human.RootPart)
+	end
+	end
+	for i=1,#Characters do local v = Characters[i]
+		if v ~= game.Players.LocalPlayer.Character then
+			local Human = v:FindFirstChildOfClass("Humanoid")
+			if Human and Human.RootPart and Human.Health > 0 and Client:DistanceFromCharacter(Human.RootPart.Position) <= Sizes + 5 then
+				table.insert(Hits,Human.RootPart)
+			end
+		end
+	end
+	return Hits
+	end
+
+	function AttackFunction()
+		local ac = CombatFrameworkR.activeController
+		if ac and ac.equipped then
+		 for m4kor1 = 3, 3 do
+			local bladehit = getAllBladeHits(40)
+			if #bladehit > 0 then
+				local AcAttack8 = debug.getupvalue(ac.attack, 5)
+				local AcAttack9 = debug.getupvalue(ac.attack, 6)
+				local AcAttack7 = debug.getupvalue(ac.attack, 4)
+				local AcAttack10 = debug.getupvalue(ac.attack, 7)
+				local NumberAc12 = (AcAttack8 * 798405 + AcAttack7 * 727595) % AcAttack9
+				local NumberAc13 = AcAttack7 * 798405
+				(function() 
+					NumberAc12 = (NumberAc12 * AcAttack9 + NumberAc13) % 1099511627776
+					AcAttack8 = math.floor(NumberAc12 / AcAttack9)
+					AcAttack7 = NumberAc12 - AcAttack8 * AcAttack9
+				end)()
+				AcAttack10 = AcAttack10 + 100
+				debug.setupvalue(ac.attack, 5, AcAttack8)
+				debug.setupvalue(ac.attack, 6, AcAttack9)
+				debug.setupvalue(ac.attack, 4, AcAttack7)
+				debug.setupvalue(ac.attack, 7, AcAttack10)
+				for k, v in pairs(ac.animator.anims.basic) do
+					v:Play(0.01, 0.01, 0.01)
+				end
+				if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") and ac.blades and ac.blades[1] then
+					game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(CurrentWeapon()))
+					game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(NumberAc12 / 1099511627776 * 16777215), AcAttack10)
+					game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, 1, "")
+				end
+			end
+		end
+		end
+		end
+	
+
+coroutine.wrap(function()
+	while task.wait(0) do
+		local ac = CombatFrameworkR.activeController
+		if ac and ac.equipped then
+			task.wait(0.05)
+			if _G.FastAttack then
+				AttackFunction()
+				if _G.FastAttack then
+					if tick() - cooldownfastattack > 0.01 then 
+						cooldownfastattack = tick() 
+					end
+					if tick() - cooldownfastattack > 0.1 then 
+						cooldownfastattack = tick() 
+					end
+					if tick() - cooldownfastattack > 0 then 
+						cooldownfastattack = tick() 
+					end
+					if tick() - cooldownfastattack > 0.1 then 
+						cooldownfastattack = tick() 
+					end
+					if tick() - cooldownfastattack > 0.01 then 
+						cooldownfastattack = tick() 
+					end
+					if tick() - cooldownfastattack > 0.1 then 
+						cooldownfastattack = tick() 
+					end
+					if tick() - cooldownfastattack > 0.2 then 
+						cooldownfastattack = tick() 
+					end
+				end
+				setscriptable(game.Players.LocalPlayer, "SimulationRadius", true)
+				sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+			end
+		end
+	end
+end)()
+
+for _, func in pairs(getreg()) do
+    if typeof(func) == "function" and getfenv(func).script == game.Players.LocalPlayer.PlayerScripts.CombatFramework then
+        for _, upvalue in pairs(debug.getupvalues(func)) do
+            if typeof(upvalue) == "table" then
+                spawn(function()
+                    game:GetService("RunService").RenderStepped:Connect(function()
+                        if _G.FastAttack then
+                            pcall(function()
+                                local controller = upvalue.activeController
+                                
+                                if controller then
+                                    controller.increment = 3  
+                                    
+           
+                                    controller.timeToNextAttack = -(math.huge^math.huge)
+                                    controller.attacking = false
+                                    controller.timeToNextBlock = 0
+                                    controller.blocking = false
+                                    controller.hitboxMagnitude = 50
+                                    controller.humanoid.AutoRotate = true
+                                    controller.blocking = false
+                                    controller.timeToNextBlock = 0
+                                    game.Players.LocalPlayer.Character.Stun.Value = 0
+                                    game.Players.LocalPlayer.Character.Humanoid.Sit = false
+                                    controller.focusStart = 0
+                                end
+                            end)
+                        end
+                    end)
+                end)
+            end
+        end
+    end
+end
+
+spawn(function()
+      while wait() do
+      if _G.FastAttack then
+        for i, v in pairs(game.Workspace["_WorldOrigin"]:GetChildren()) do
+            if v.Name == "CurvedRing" or v.Name == "SlashHit" or v.Name == "DamageCounter" or v.Name == "SwordSlash" or v.Name == "SlashTail" or v.Name == "Sounds" then
+                v:Destroy() 
+            end
+        end
+    end
+    end
+end)            game.Players.LocalPlayer.Character.Busy.Value = false        
         end
     end)
 end)
@@ -3424,69 +3588,6 @@ end)
                             STOP.play = shared.cpc
                             wait(a.length * 0.5)
                             a:Stop()
-                        else
-                            a:Play()
-                        end
-                    end
-                end
-            end)
-        end
-    end)
-
-function GetBladeHit()
-    local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
-    local CmrFwLib = CombatFrameworkLib[2]
-    local p13 = CmrFwLib.activeController
-    local weapon = p13.blades[1]
-    if not weapon then 
-        return weapon
-    end
-    while weapon.Parent ~= game.Players.LocalPlayer.Character do
-        weapon = weapon.Parent 
-    end
-    return weapon
-end
-function AttackHit()
-    local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
-    local CmrFwLib = CombatFrameworkLib[2]
-    local plr = game.Players.LocalPlayer
-    for i = 1, 1 do
-        local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(plr.Character,{plr.Character.HumanoidRootPart},60)
-        local cac = {}
-        local hash = {}
-        for k, v in pairs(bladehit) do
-            if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
-                table.insert(cac, v.Parent.HumanoidRootPart)
-                hash[v.Parent] = true
-            end
-        end
-        bladehit = cac
-        if #bladehit > 0 then
-            pcall(function()
-                CmrFwLib.activeController.timeToNextAttack = 1
-                CmrFwLib.activeController.attacking = false
-                CmrFwLib.activeController.blocking = false
-                CmrFwLib.activeController.timeToNextBlock = 0
-                CmrFwLib.activeController.increment = 3
-                CmrFwLib.activeController.hitboxMagnitude = 60
-                CmrFwLib.activeController.focusStart = 0
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetBladeHit()))
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "")
-            end)
-        end
-    end
-end
-spawn(function()
-    while wait(.1) do
-        if _G.FastAttack then
-            pcall(function()
-                repeat task.wait(0.5,1,0.4,0.9,0.8)
-                    AttackHit()
-                until not _G.FastAttack
-            end)
-        end
-    end
-end)
 
 Setting:Toggle("Auto Click",false,function(value)
 _G.AutoClick = value
