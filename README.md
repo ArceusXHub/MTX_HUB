@@ -3367,7 +3367,7 @@ spawn(function()
     end
 end)
   
-    Setting:Toggle("Fast Attack Bata",true,function(value)
+    Setting:Toggle("Fast Attack Bata1",true,function(value)
         _G.FastAttack = value
     end)      
     
@@ -3410,7 +3410,7 @@ end)
     local STOP = require(Client.PlayerScripts.CombatFramework.Particle)
     local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
     spawn(function()
-        while task.wait(0.4) do
+        while task.wait() do
             pcall(function()
                 if not shared.orl then shared.orl = STOPRL.wrapAttackAnimationAsync end
                 if not shared.cpc then shared.cpc = STOP.play end
