@@ -3344,7 +3344,7 @@ spawn(function()
                 elseif _G.BringMode == "Normal" then
                     _G.BringMode = 250
                 elseif _G.BringMode == "Super Bring" then
-                    _G.BringMode = 500
+                    _G.BringMode = 300
                 end
             end)
         end
@@ -3367,7 +3367,7 @@ spawn(function()
     end
 end)
   
-    Setting:Toggle("Fast Attack Bata2",true,function(value)
+    Setting:Toggle("Fast Attack",true,function(value)
         _G.FastAttack = value
     end)      
     
@@ -3395,7 +3395,6 @@ spawn(function()
         end
     end)
 end)
-
 spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
         if _G.FastAttack or _G.FastAttackCambodiakak == true then
@@ -3404,6 +3403,35 @@ spawn(function()
         end
     end)
 end)
+
+    local CamShake = require(game.ReplicatedStorage.Util.CameraShaker)
+    CamShake:Stop()
+    local Client = game.Players.LocalPlayer
+    local STOP = require(Client.PlayerScripts.CombatFramework.Particle)
+    local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
+    spawn(function()
+        while task.wait(0.4) do
+            pcall(function()
+                if not shared.orl then shared.orl = STOPRL.wrapAttackAnimationAsync end
+                if not shared.cpc then shared.cpc = STOP.play end
+                    STOPRL.wrapAttackAnimationAsync = function(a,b,c,d,func)
+                    local Hits = STOPRL.getBladeHits(b,c,d)
+                    if Hits then
+                        if _G.FastAttack then
+                            STOP.play = function() end
+                            a:Play(0.4,0.9,0.6,2,0.4,0.9,0.6,2,0.2)
+                            func(Hits)
+                            STOP.play = shared.cpc
+                            wait(a.length * 0.9)
+                            a:Stop()
+                        else
+                            a:Play()
+                        end
+                    end
+                end
+            end)
+        end
+    end)
 
 Setting:Toggle("Auto Click",false,function(value)
 _G.AutoClick = value
@@ -15811,83 +15839,6 @@ for _, effectName in ipairs(effectsToDestroy) do
     local effect = effectContainer:FindFirstChild(effectName)
     if effect then
         effect:Destroy()
-    end
-end
-
-local SuperFastMode = true -- Change to true if you want Super Super Super Fast attack (Like instant kill) but it will make the game kick you more than normal mode
-
-local plr = game.Players.LocalPlayer
-local CbFw = debug.getupvalues(require(plr.PlayerScripts.CombatFramework))
-local CbFw2 = CbFw[2]
-
--- Function to get the current blade
-function GetCurrentBlade()
-    local p13 = CbFw2.activeController
-    local ret = p13.blades[1]
-    if not ret then return end
-    while ret.Parent ~= plr.Character do
-        ret = ret.Parent
-    end
-    return ret
-end
-
--- Function to perform fast attacks without cooldown
-function AttackNoCD()
-    local AC = CbFw2.activeController
-    for i = 1, 1 do
-        local bladeHit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
-            plr.Character,
-            { plr.Character.HumanoidRootPart },
-            60
-        )
-        local uniqueHits = {}
-        local hash = {}
-        for k, v in pairs(bladeHit) do
-            if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
-                table.insert(uniqueHits, v.Parent.HumanoidRootPart)
-                hash[v.Parent] = true
-            end
-        end
-        bladeHit = uniqueHits
-
-        if #bladeHit > 0 then
-            local u8 = debug.getupvalue(AC.attack, 5)
-            local u9 = debug.getupvalue(AC.attack, 6)
-            local u7 = debug.getupvalue(AC.attack, 4)
-            local u10 = debug.getupvalue(AC.attack, 7)
-            local u12 = (u8 * 798405 + u7 * 727595) % u9
-            local u13 = u7 * 798405
-            (function()
-                u12 = (u12 * u9 + u13) % 1099511627776
-                u8 = math.floor(u12 / u9)
-                u7 = u12 - u8 * u9
-            end)()
-            u10 = u10 + 10
-            debug.setupvalue(AC.attack, 5, u8)
-            debug.setupvalue(AC.attack, 6, u9)
-            debug.setupvalue(AC.attack, 4, u7)
-            debug.setupvalue(AC.attack, 7, u10)
-            pcall(function()
-                for k, v in pairs(AC.animator.anims.basic) do
-                    v:Play()
-                end
-            end)
-            if plr.Character:FindFirstChildOfClass("Tool") and AC.blades and AC.blades[1] then
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange", tostring(GetCurrentBlade()))
-                game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(u12 / 1099511627776 * 16777215), u10)
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladeHit, i, "")
-            end
-        end
-    end
-end
-
-local waitFunction = SuperFastMode and task.wait or wait
-
-while waitFunction() do
-    local success, error = pcall(AttackNoCD)
-    if not success then
-        warn("Error in AttackNoCD:", error)
-        -- Handle the error as needed
     end
 end
 
