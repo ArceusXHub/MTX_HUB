@@ -3419,7 +3419,7 @@ end)
                     if Hits then
                         if _G.FastAttack then
                             STOP.play = function() end
-                            a:Play(0.4,0.9,0.6,2,0.4,0.9,0.6,2,0.2)
+                            a:Play(0.4,0.6,2,0.6)
                             func(Hits)
                             STOP.play = shared.cpc
                             wait(a.length * 0.9)
