@@ -3432,7 +3432,7 @@ end)
             end)
         end
     end)
-    
+
 Setting:Toggle("Auto Click",false,function(value)
 _G.AutoClick = value
 end)
