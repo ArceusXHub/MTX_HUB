@@ -3433,42 +3433,6 @@ end)
         end
     end)
 
-local AttackList = {"0", "0.1", "0.15", "0.155", "0.16", "0.165", "0.17", "0.175", "0.18", "0.185"}
-_G.FastAttackDelay = "0.175"
-Setting:Dropdown("Fast Attack Delay (Default)", AttackList,function(MakoGay)
-    _G.FastAttackDelay = MakoGay
-end)
-
-spawn(function()
-    while wait(.1) do
-        if _G.FastAttackDelay then
-            pcall(function()
-                if _G.FastAttackDelay == "0" then
-                    _G.FastAttackDelay = 0
-                elseif _G.FastAttackDelay == "0.1" then
-                    _G.FastAttackDelay = 0.1
-                elseif _G.FastAttackDelay == "0.15" then
-                    _G.FastAttackDelay = 0.15
-                elseif _G.FastAttackDelay == "0.155" then
-                    _G.FastAttackDelay = 0.155
-                elseif _G.FastAttackDelay == "0.16" then
-                    _G.FastAttackDelay = 0.16
-                elseif _G.FastAttackDelay == "0.165" then
-                    _G.FastAttackDelay = 0.165
-                elseif _G.FastAttackDelay == "0.17" then
-                    _G.FastAttackDelay = 0.17
-                elseif _G.FastAttackDelay == "0.175" then
-                    _G.FastAttackDelay = 0.175
-                elseif _G.FastAttackDelay == "0.18" then
-                    _G.FastAttackDelay = 0.18
-                elseif _G.FastAttackDelay == "0.185" then
-                    _G.FastAttackDelay = 0.185
-                end
-            end)
-        end
-    end
-end)
-
 function GetBladeHit()
     local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
     local CmrFwLib = CombatFrameworkLib[2]
@@ -3516,7 +3480,7 @@ spawn(function()
     while wait(.1) do
         if _G.FastAttack then
             pcall(function()
-                repeat task.wait(_G.FastAttackDelay)
+                repeat task.wait(0.175)
                     AttackHit()
                 until not _G.FastAttack
             end)
